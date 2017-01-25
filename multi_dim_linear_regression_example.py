@@ -1,4 +1,3 @@
-# lets try linear regression
 import tensorflow as tf
 import numpy as np
 

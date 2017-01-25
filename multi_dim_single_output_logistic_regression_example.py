@@ -1,11 +1,12 @@
-# lets try linear regression
 import tensorflow as tf
 import numpy as np
+from utils import SEED
 
-num_epochs = 2000
+np.random.seed(SEED)
 
 def sigmoid(x):
     return 1./(1 + np.exp(-x))
+
 
 def model(X, w, b):
     return tf.matmul(X, w) + b
@@ -13,8 +14,8 @@ def model(X, w, b):
 
 def inference(X):
     # X is a placeholder variable
-    w = tf.Variable(tf.random_normal([2, 1], stddev=0.01), name='weights')
-    b = tf.Variable(tf.random_normal([1], stddev=0.01), name='biases')
+    w = tf.Variable(tf.random_normal([X.get_shape()[1].value, 1], stddev=0.1, seed=SEED), name='weights')
+    b = tf.Variable(tf.random_normal([1], stddev=0.1, seed=SEED), name='biases')
     return model(X, w, b), w, b
 
 
@@ -31,6 +32,7 @@ def predict(X, w, b):
 
 
 def run_training(x, y):
+    num_epochs = 4000
     X = tf.placeholder(tf.float32, shape=x.shape)
     Y = tf.placeholder(tf.float32, shape=y.shape)
     y_hat, w, b = inference(X)
@@ -47,16 +49,20 @@ def run_training(x, y):
             if step % 100 == 0:
                 w_value, b_value = sess.run([w, b])
                 print('Step %d: loss = %.2f' % (step, loss_value))
-                print (y * -np.log(p) + (1 - y) * -np.log(1 - p)).mean()
-                print w_value, b_value
+                #print (y * -np.log(p) + (1 - y) * -np.log(1 - p)).mean()
+                #mprint w_value, b_value
+
+    return w_value, b_value
 
 
 if __name__ == '__main__':
 
+
     N = 1000
-    w = np.array([[0.5, -1.]])
+    w = np.random.randn(1,10)
     b = 0.1
 
     x = np.random.randn(N, w.shape[1])
-    y = np.random.binomial(1, sigmoid(np.dot(x, w.T) + b))
+    p = sigmoid(x[:, 0])[:, None]*sigmoid(np.dot(x, w.T) + b)
+    y = np.random.binomial(1, p)
     run_training(x, y)

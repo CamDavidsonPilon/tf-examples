@@ -1,23 +1,6 @@
-# lets try linear regression
 import tensorflow as tf
 import numpy as np
-from sklearn.cross_validation import train_test_split
-
-
-class Data(object):
-
-    def __init__(self, x, y):
-        # hold back 20% for testing
-        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=.2)
-
-        self.xtr = x_train
-        self.ytr = y_train
-
-        self.Xtr = tf.placeholder(tf.float32, shape=x_train.shape, name='xtrain')
-        self.Ytr = tf.placeholder(tf.float32, shape=y_train.shape, name='ytrain')
-
-        self.xte = x_test
-        self.Xte = tf.placeholder(tf.float32, shape=x_test.shape, name='xtest')
+from utils import Data
 
 
 def softmax(x):
